@@ -35,7 +35,9 @@ input, textarea, select { font-size: 1rem; }
 .manual .lead { font-size: 1.05rem; }
 .manual ul { list-style: disc; padding-left: 1.3rem; margin: .3rem 0; }
 .manual li { margin: .25rem 0; line-height: 1.5; }
-.manual table { width: 100%; border-collapse: collapse; margin: .6rem 0; font-size: .95rem; }
+.manual table { width: 100%; border-collapse: collapse; margin: .6rem 0; font-size: .95rem; table-layout: fixed; }
+.manual td, .manual th { overflow-wrap: anywhere; hyphens: auto; }
+@media (max-width: 480px) { .manual table { font-size: .85rem; } .manual td, .manual th { padding: .4rem .35rem; } }
 .manual th { background: var(--color-jungle); color: #fff; text-align: left; padding: .45rem .6rem; }
 .manual td { border-bottom: 1px solid var(--color-line); padding: .45rem .6rem; vertical-align: top; }
 .manual .card { background: #fff; border: 1px solid var(--color-line); border-radius: 1rem; padding: .9rem 1rem; margin: .6rem 0; }

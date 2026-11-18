@@ -49,7 +49,7 @@ export default function Espressor({ c, stare }: { c: Continut; stare?: Stare }) 
 
       <Card tone="leaf">
         <h2 className="mb-3 flex items-center gap-2 font-extrabold"><Gauge className="size-5" /> Ținta pentru fiecare espresso</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           {e.tinte.map(t => (
             <div key={t.id} className="rounded-2xl bg-white p-3 text-center">
               <div className="text-2xl font-extrabold text-jungle">{t.text}</div>
@@ -68,7 +68,7 @@ export default function Espressor({ c, stare }: { c: Continut; stare?: Stare }) 
           ))}
         </ol>
         {sv && <Card tone="leaf" className="mb-3">Reglaj salvat azi de {av(sv.avatar).emoji} {av(sv.avatar).nume} la {sv.ora}. Poți salva din nou dacă reglezi iar.</Card>}
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Field label="Treapta râșniței (cum scrie pe ea)">
             <input value={d.macinare} onChange={ev => setD(p => ({ ...p, macinare: ev.target.value }))} className={clsx(inputCls, tried && !d.macinare.trim() && 'border-clay')} />
           </Field>

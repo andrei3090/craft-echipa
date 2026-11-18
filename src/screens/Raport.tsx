@@ -69,7 +69,7 @@ export default function Raport({ c, stare }: { c: Continut; stare?: Stare }) {
         <h2 className="mb-3 font-extrabold">{title}</h2>
         <div className="space-y-2">
           {rows.map((row, i) => (
-            <div key={i} className="grid gap-2" style={{ gridTemplateColumns: t.coloane.map((_, j) => (j === 0 ? '2fr' : '1fr')).join(' ') }}>
+            <div key={i} className="grid gap-2" style={{ gridTemplateColumns: t.coloane.map((_, j) => (j === 0 ? 'minmax(0,2fr)' : 'minmax(0,1fr)')).join(' ') }}>
               {row.map((cell, j) => (
                 key === 'pierderi' && j === 2 && t.motive ? (
                   <select key={j} value={cell} onChange={e => upd(i, j, e.target.value)} className={inputCls} aria-label={t.coloane[j]}>
@@ -121,9 +121,9 @@ export default function Raport({ c, stare }: { c: Continut; stare?: Stare }) {
       <PageTitle emoji="🧾" title="Raport de închidere" sub="Se face după raportul Z. Diferențele se calculează singure." />
       {sv && <Card tone="leaf">Trimis azi de {av(sv.avatar).emoji} {av(sv.avatar).nume} la {sv.ora}.</Card>}
 
-      <Card><h2 className="mb-3 font-extrabold">Casa de marcat (raport Z)</h2><div className="grid gap-3 sm:grid-cols-2">{r.campuri_casa.map(field)}</div>
+      <Card><h2 className="mb-3 font-extrabold">Casa de marcat (raport Z)</h2><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{r.campuri_casa.map(field)}</div>
         {!calc.z_ok && d.v.z_total && <p className="mt-3 font-bold text-clay">Numerar + card nu dă totalul Z. Verifică cifrele.</p>}</Card>
-      <Card><h2 className="mb-3 font-extrabold">Card</h2><div className="grid gap-3 sm:grid-cols-2">{r.campuri_card.map(field)}</div></Card>
+      <Card><h2 className="mb-3 font-extrabold">Card</h2><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{r.campuri_card.map(field)}</div></Card>
 
       <Card>
         <h2 className="mb-1 font-extrabold">Numărătoarea banilor</h2>
@@ -141,7 +141,7 @@ export default function Raport({ c, stare }: { c: Continut; stare?: Stare }) {
         </div>
       </Card>
 
-      <Card><h2 className="mb-3 font-extrabold">Numerar</h2><div className="grid gap-3 sm:grid-cols-2">{r.campuri_numerar.map(field)}</div></Card>
+      <Card><h2 className="mb-3 font-extrabold">Numerar</h2><div className="grid grid-cols-1 gap-3 sm:grid-cols-2">{r.campuri_numerar.map(field)}</div></Card>
 
       {table('pierderi', 'Pierderi (aruncate)')}
       {table('de_comandat', 'De comandat')}

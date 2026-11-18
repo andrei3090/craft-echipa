@@ -11,7 +11,7 @@ export default function Formulare({ c }: { c: Continut }) {
   return (
     <div>
       <PageTitle emoji="📋" title="Formulare" sub="Le completezi când se întâmplă ceva. Fiecare salvare ajunge la Andrei în Drive." backTo={false} />
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {Object.entries(c.formulare).map(([id, f]) => (
           <button key={id} onClick={() => go(`form/${id}`)} className="flex items-center gap-4 rounded-3xl border border-line bg-card p-4 text-left shadow-sm active:scale-[.99]">
             <span className="grid size-14 place-items-center rounded-2xl bg-cream text-3xl">{f.emoji}</span>

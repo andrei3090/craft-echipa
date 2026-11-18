@@ -46,9 +46,9 @@ export default function Retete({ c }: { c: Continut }) {
         ))}
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {list.map(r => (
-          <button key={r.id} onClick={() => go(`reteta/${r.id}`)} className="flex items-center gap-3 rounded-2xl border border-line bg-card p-3 text-left active:scale-[.99]">
+          <button key={r.id} onClick={() => go(`reteta/${r.id}`)} className="flex min-w-0 items-center gap-3 rounded-2xl border border-line bg-card p-3 text-left active:scale-[.99]">
             <span className="grid size-11 flex-none place-items-center rounded-xl bg-cream text-2xl">{c.categorii.find(k => k.id === r.cat)?.emoji ?? '•'}</span>
             <span className="min-w-0 flex-1">
               <span className="block font-extrabold leading-tight">{r.nume}</span>
@@ -101,7 +101,7 @@ export function RetetaPage({ c, id }: { c: Continut; id?: string }) {
           ))}
         </ol>
       </Card>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {r.pahar && (
           <Card tone="leaf" className="flex items-center gap-3">
             <CupSoda className="size-6 flex-none text-jungle" />

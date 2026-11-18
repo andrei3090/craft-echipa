@@ -47,7 +47,7 @@ export default function Home({ c, stare, loading }: { c: Continut; stare?: Stare
 
       <section>
         <h2 className="mb-2 text-sm font-extrabold tracking-wider text-muted uppercase">Checklistul zilei</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {liste.map(s => {
             const sv = saved('zilnic', s.titlu);
             return (
@@ -75,7 +75,7 @@ export default function Home({ c, stare, loading }: { c: Continut; stare?: Stare
         </section>
       )}
 
-      <section className="grid gap-3 sm:grid-cols-2">
+      <section className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Tile onClick={() => go('espressor')} icon={<Coffee className="size-7 text-jungle" />} title="Reglaj espresso"
           sub="Dimineața: 18 g → 36 g în 25–30 s" done={!!saved('reglaj')} right={who(saved('reglaj'))} />
         <Tile onClick={() => go('temp')} icon={<Thermometer className="size-7 text-jungle" />} title="Temperaturi"

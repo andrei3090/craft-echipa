@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-jungle: #2F6B47;
+  --color-jungle-dark: #1F4D32;
+  --color-leaf: #E3EEE5;
+  --color-sun: #E9A82B;
+  --color-sun-soft: #FBEFD2;
+  --color-clay: #B5502A;
+  --color-clay-soft: #F8E3D9;
+  --color-cream: #FBF7EF;
+  --color-card: #FFFFFF;
+  --color-ink: #3B2A1E;
+  --color-muted: #7A6A5A;
+  --color-line: #E8DFD0;
+  --font-display: "Marcellus", Georgia, serif;
+  --font-sans: "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+html, body, #root { height: 100%; }
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+button { touch-action: manipulation; }
+input, textarea, select { font-size: 1rem; }
+
+/* manual pages (HTML from the printed team manual, sanitised) */
+.manual h2 { font-family: var(--font-display); color: var(--color-jungle); font-size: 1.3rem; margin: 1.25rem 0 .5rem; }
+.manual h3 { font-weight: 800; margin-bottom: .35rem; }
+.manual p { margin: .4rem 0; line-height: 1.55; }
+.manual .lead { font-size: 1.05rem; }
+.manual ul { list-style: disc; padding-left: 1.3rem; margin: .3rem 0; }
+.manual li { margin: .25rem 0; line-height: 1.5; }
+.manual table { width: 100%; border-collapse: collapse; margin: .6rem 0; font-size: .95rem; }
+.manual th { background: var(--color-jungle); color: #fff; text-align: left; padding: .45rem .6rem; }
+.manual td { border-bottom: 1px solid var(--color-line); padding: .45rem .6rem; vertical-align: top; }
+.manual .card { background: #fff; border: 1px solid var(--color-line); border-radius: 1rem; padding: .9rem 1rem; margin: .6rem 0; }
+.manual .card.green { background: var(--color-leaf); border-color: #cfe0d3; }
+.manual .card.sun { background: var(--color-sun-soft); border-color: #f1dca8; }
+.manual .card.red { background: var(--color-clay-soft); border-color: #efc7b6; }
+.manual .g2, .manual .g3 { display: grid; gap: .6rem; }
+@media (min-width: 760px) { .manual .g2 { grid-template-columns: 1fr 1fr; } .manual .g3 { grid-template-columns: repeat(3, 1fr); } }
+.manual .g2 > .card, .manual .g3 > .card { margin: 0; }
+.manual .num { display: flex; gap: .7rem; align-items: flex-start; margin: .5rem 0; }
+.manual .num .n { flex: none; width: 2rem; height: 2rem; border-radius: 999px; background: var(--color-jungle); color: #fff; display: grid; place-items: center; }
+.manual .num p { margin: 0; }
+.manual .tag { display: inline-block; font-size: .75rem; font-weight: 800; padding: .1rem .5rem; border-radius: .4rem; margin-right: .3rem; background: #DCE8F7; color: #1E4E8C; }
+.manual .tag.g { background: var(--color-leaf); color: var(--color-jungle); }
+.manual .tag.r { background: var(--color-clay-soft); color: var(--color-clay); }
+.manual .big { font-size: 1.1rem; }

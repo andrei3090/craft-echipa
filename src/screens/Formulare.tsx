@@ -36,7 +36,6 @@ export function FormularScreen({ c, id }: { c: Continut; id?: string }) {
   const [tried, setTried] = useState(false);
   if (!f || !id) return <PageTitle title="Formular" />;
 
-  const textFields = f.campuri.filter(x => x.tip === 'textarea' || x.tip === 'text');
   const empty = !Object.entries(d.v).some(([k, v]) => k !== 'ora' && (typeof v === 'string' ? v.trim() : v)) || (f.tipuri && !d.tip);
 
   const submit = async () => {
@@ -78,7 +77,7 @@ export function FormularScreen({ c, id }: { c: Continut; id?: string }) {
             </Field>
           );
         })}
-        {tried && empty && <p className="font-bold text-clay">Completează cel puțin {f.tipuri ? 'tipul și ' : ''}{textFields[0]?.label.toLowerCase()}.</p>}
+        {tried && empty && <p className="font-bold text-clay">{f.tipuri && !d.tip ? 'Alege ce fel de incident a fost și completează cel puțin un câmp.' : 'Completează cel puțin un câmp.'}</p>}
       </div>
       <SaveBar><Button onClick={submit} busy={busy}>Salvează</Button></SaveBar>
     </div>

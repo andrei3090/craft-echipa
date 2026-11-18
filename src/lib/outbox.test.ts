@@ -6,7 +6,7 @@ const item = (id: string): Pending => ({ inregistrare: { id, tip: 'zilnic', titl
 
 describe('offline outbox', () => {
   it('keeps saves when the network fails and sends them in order later', async () => {
-    const offline = vi.fn().mockRejectedValue(new Error('Failed to fetch'));
+    const offline = vi.fn().mockRejectedValue(new TypeError('Failed to fetch'));
     await enqueue(item('a'), offline);
     await enqueue(item('b'), offline);
     expect(useOutbox.getState().pending.map(p => p.inregistrare.id)).toEqual(['a', 'b']);
@@ -17,5 +17,15 @@ describe('offline outbox', () => {
     expect(await flush(online)).toBe(2);
     expect(sent).toEqual(['a', 'b']);
     expect(useOutbox.getState().pending).toEqual([]);
+  });
+
+  it('skips a save the server refuses and still sends the others', async () => {
+    const refused = (_t: string, i: { id: string }) => (i.id === 'bad' ? Promise.reject(new Error('tip necunoscut')) : Promise.resolve());
+    await enqueue(item('bad'), () => Promise.reject(new TypeError('Failed to fetch')));
+    await enqueue(item('good'), () => Promise.reject(new TypeError('Failed to fetch')));
+    expect(await flush(refused)).toBe(1);
+    const left = useOutbox.getState().pending;
+    expect(left.map(p => p.inregistrare.id)).toEqual(['bad']);
+    expect(left[0].error).toBe('tip necunoscut');
   });
 });

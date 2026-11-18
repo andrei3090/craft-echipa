@@ -93,6 +93,7 @@ export type Inregistrare = {
   titlu: string;
   continut: Record<string, unknown>;
   poze?: { b64: string }[];
+  trimis_la?: string;
 };
 
 const SarcinaScor = z.object({ id: z.string(), nume: z.string(), max: z.number(), puncte: z.number(), stare: z.string(), ora: z.string(), pana: z.string() });

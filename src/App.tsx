@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { clsx } from 'clsx';
 import { BookOpen, CalendarCheck, ClipboardList, CloudOff, Coffee, Home as HomeIcon, LogOut, RefreshCw } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getContinut, getStare, SessionExpired } from './lib/api';
 import { useOutbox } from './lib/outbox';
 import { go, useRoute } from './lib/route';
@@ -35,6 +35,15 @@ function Shell() {
 
   const continut = useQuery({ queryKey: ['continut', token], queryFn: () => getContinut(token), staleTime: 60 * 60 * 1000, retry: 1 });
   const stare = useQuery({ queryKey: ['azi', token], queryFn: () => getStare(token), refetchInterval: 60_000, retry: 1 });
+
+  // when the offline queue sends something, refresh what the screens show
+  const qc = useQueryClient();
+  const pendingCount = useOutbox(s => s.pending.length);
+  const prevPending = useRef(pendingCount);
+  useEffect(() => {
+    if (pendingCount < prevPending.current) { qc.invalidateQueries({ queryKey: ['azi'] }); qc.invalidateQueries({ queryKey: ['scor'] }); }
+    prevPending.current = pendingCount;
+  }, [pendingCount, qc]);
 
   const path = route.join('/');
   useEffect(() => { scrollTo(0, 0); }, [path]);

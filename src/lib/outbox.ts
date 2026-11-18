@@ -24,26 +24,33 @@ export async function enqueue(item: Pending, send: Sender) {
 
 let running: Promise<number> | null = null;
 
-/** Sends everything waiting. Returns how many were sent. Stops at the first network error. */
+/** Network failure (no Wi-Fi, server unreachable) as opposed to a save the server refused. */
+const isNetwork = (e: unknown) => e instanceof TypeError || /fetch|network|load failed/i.test(String((e as Error)?.message ?? e));
+
+/**
+ * Sends everything waiting, oldest first. Returns how many were sent.
+ * A network failure stops the run (the rest waits for the connection). A save the server refuses is
+ * kept with its error and skipped, so one bad item never blocks the others.
+ */
 export function flush(send: Sender): Promise<number> {
   if (running) return running;
   running = (async () => {
     useOutbox.setState({ sending: true });
     let sent = 0;
     try {
-      for (;;) {
-        const q = await read();
-        if (!q.length) break;
-        const head = q[0];
+      const ids = (await read()).map(p => p.inregistrare.id);
+      for (const id of ids) {
+        const item = (await read()).find(p => p.inregistrare.id === id);
+        if (!item) continue;
         try {
-          await send(head.token, head.inregistrare);
+          await send(item.token, item.inregistrare);
         } catch (e) {
           const msg = e instanceof Error ? e.message : String(e);
-          // network problem: keep it and retry later; a refused save is kept with its error so nothing disappears silently
-          await write([{ ...head, error: msg }, ...q.slice(1)]);
-          break;
+          await write((await read()).map(p => (p.inregistrare.id === id ? { ...p, error: msg } : p)));
+          if (isNetwork(e)) break;
+          continue;
         }
-        await write(q.slice(1));
+        await write((await read()).filter(p => p.inregistrare.id !== id));
         sent++;
       }
     } finally {

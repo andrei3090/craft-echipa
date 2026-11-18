@@ -6,7 +6,8 @@ import { enqueue, flush, useOutbox } from './outbox';
 import { useSession } from './session';
 import type { Inregistrare } from './types';
 
-export const sender = (token: string, i: Inregistrare) => salveaza(token, i);
+// trimis_la lets the server measure how long the save waited on the tablet (see backend salveaza)
+export const sender = (token: string, i: Inregistrare) => salveaza(token, { ...i, trimis_la: new Date().toISOString() });
 
 /** Save = put in the offline outbox, then try to send. Never loses the record. */
 export function useSave() {

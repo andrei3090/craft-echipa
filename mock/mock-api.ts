@@ -15,6 +15,16 @@ const PIN = '2580';
 
 type Row = { id: string; data: string; ora: string; avatar: string; tip: string; titlu: string; rezumat: string; alerta: string; json: unknown };
 
+// Runs the real backend/Scor.gs against the mock rows, so local tests check the real scoring.
+function scorFromBackend(rows: Row[], avatar: string, today: string, now: string) {
+  const p = resolve(__dirname, '../../backend/Scor.gs');
+  if (!existsSync(p)) return { ok: false, error: 'Scor.gs lipsă' };
+  const fn = new Function('rows', 'azi', 'ora', 'AVATARE', 'Utilities', 'TZ', 'esc', 'props', 'TRIMITE_EMAIL', 'a',
+    readFileSync(p, 'utf8') + '\nreturn scorAvatar(a);');
+  const U = { formatString: (_f: string, h: number, m: number) => `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}` };
+  return fn(() => rows, () => today, () => now, AVATARE, U, 'Europe/Bucharest', (x: string) => x, () => ({}), false, avatar);
+}
+
 export function mockApi(): Plugin {
   const rows: Row[] = [];
   const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
@@ -37,6 +47,7 @@ export function mockApi(): Plugin {
             const [avatar, day] = String(d.token || '').split('.');
             if (day !== today()) return send({ ok: false, error: 'sesiune expirată' });
             if (d.action === 'continut') return send({ ok: true, continut: content() });
+            if (d.action === 'scor') { const t = new Date(); return send(scorFromBackend(rows, avatar, today(), `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`)); }
             if (d.action === 'azi') {
               const zi = rows.filter(r => r.data === today()).map(({ json: _j, ...r }) => r);
               const done = (tip: string) => Object.fromEntries(rows.filter(r => r.tip === tip).flatMap(r => ((r.json as { facute?: string[] }).facute ?? []).map(id => [id, { avatar: r.avatar, data: r.data }])));
@@ -46,7 +57,7 @@ export function mockApi(): Plugin {
               const i = d.inregistrare;
               if (!rows.some(r => r.id === i.id)) {
                 const t = new Date();
-                rows.push({ id: i.id, data: today(), ora: `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`, avatar, tip: i.tip, titlu: i.titlu, rezumat: '', alerta: '', json: i.continut });
+                rows.push({ id: i.id, data: today(), ora: `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`, avatar, tip: i.tip, titlu: i.titlu, rezumat: i.tip === 'tura' ? i.continut.tura : '', alerta: i.tip === 'raport' && (Number(i.continut.dif_card) || Number(i.continut.dif_numerar)) ? 'diferență' : '', json: i.continut });
               }
               return send({ ok: true, id: i.id, pdf: '#' });
             }

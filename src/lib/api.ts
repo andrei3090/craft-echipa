@@ -1,5 +1,5 @@
 import { get, set } from 'idb-keyval';
-import { Avatar, Continut, Stare, type Inregistrare } from './types';
+import { Avatar, Continut, Scor, Stare, type Inregistrare } from './types';
 import { z } from 'zod';
 
 let apiUrl: string | null = null;
@@ -70,4 +70,9 @@ export async function getStare(token: string): Promise<Stare> {
 
 export async function salveaza(token: string, inregistrare: Inregistrare) {
   return call<{ id: string; pdf: string }>('salveaza', { token, inregistrare });
+}
+
+export async function getScor(token: string): Promise<Scor> {
+  const r = await call<unknown>('scor', { token });
+  return Scor.parse(r);
 }

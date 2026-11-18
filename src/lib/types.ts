@@ -86,7 +86,7 @@ export const Stare = z.object({
 });
 export type Stare = z.infer<typeof Stare>;
 
-export type TipInregistrare = 'zilnic' | 'runde' | 'temperaturi' | 'saptamanal' | 'lunar' | 'raport' | 'incident' | 'receptie' | 'reglaj';
+export type TipInregistrare = 'zilnic' | 'runde' | 'temperaturi' | 'saptamanal' | 'lunar' | 'raport' | 'incident' | 'receptie' | 'reglaj' | 'tura';
 export type Inregistrare = {
   id: string;
   tip: TipInregistrare;
@@ -94,3 +94,16 @@ export type Inregistrare = {
   continut: Record<string, unknown>;
   poze?: { b64: string }[];
 };
+
+const SarcinaScor = z.object({ id: z.string(), nume: z.string(), max: z.number(), puncte: z.number(), stare: z.string(), ora: z.string(), pana: z.string() });
+export type SarcinaScor = z.infer<typeof SarcinaScor>;
+const Luna = z.object({ luna: z.string(), ture: z.number(), procent: z.number(), puncte: z.number(), max: z.number(),
+  bonus: z.object({ nivel: z.string(), suma: z.number().nullable() }) });
+export const Scor = z.object({
+  azi: z.object({ data: z.string(), tura: z.string(), sarcini: z.array(SarcinaScor), max: z.number(), puncte: z.number(), complet: z.boolean() }).nullable(),
+  luna: Luna, serie: z.number(), serieMax: z.number(), curatenie: z.number(),
+  insigne: z.array(z.object({ id: z.string(), emoji: z.string(), nume: z.string(), are: z.boolean() })),
+  praguri: z.object({ intreg: z.number(), jumatate: z.number(), minTure: z.number(), suma: z.number().nullable() }),
+  ultimele: z.array(z.object({ data: z.string(), tura: z.string(), procent: z.number() })),
+});
+export type Scor = z.infer<typeof Scor>;

@@ -2,6 +2,7 @@ import { clsx } from 'clsx';
 import { AlertTriangle, ChevronRight, CloudUpload, Coffee, Thermometer, Wallet } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Card, Progress } from '../components/ui';
+import { ScorCard } from './Scor';
 import { go } from '../lib/route';
 import { useSession } from '../lib/session';
 import { useAvatare, useSaved, type Saved } from '../lib/status';
@@ -35,6 +36,8 @@ export default function Home({ c, stare, loading }: { c: Continut; stare?: Stare
         <h1 className="font-display text-3xl text-jungle">{salut}, {me.nume}!</h1>
         <p className="text-muted capitalize-first">{zile[d.getDay()]}, {d.getDate()} {luni[d.getMonth()]}{loading ? ' · se încarcă…' : ''}</p>
       </div>
+
+      <ScorCard />
 
       {alerte.length > 0 && (
         <Card tone="clay">

@@ -18,6 +18,7 @@ import Formulare, { FormularScreen } from './screens/Formulare';
 import Manual, { ManualPage } from './screens/Manual';
 import Retete, { RetetaPage } from './screens/Retete';
 import Espressor from './screens/Espressor';
+import ScorScreen, { TuraPicker } from './screens/Scor';
 
 const base = import.meta.env.BASE_URL;
 
@@ -60,6 +61,7 @@ function Shell() {
   else if (r0 === 'retete') page = <Retete c={c} />;
   else if (r0 === 'reteta') page = <RetetaPage c={c} id={r1} />;
   else if (r0 === 'espressor') page = <Espressor c={c} stare={stare.data} />;
+  else if (r0 === 'scor') page = <ScorScreen />;
   else if (r0 === 'manual') page = r1 ? <ManualPage c={c} id={r1} /> : <Manual c={c} />;
   else page = <Home c={c} stare={stare.data} loading={stare.isLoading} />;
 
@@ -84,6 +86,7 @@ function Shell() {
       </header>
 
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 pt-5 pb-28 sm:px-6">{page}</main>
+      <TuraPicker stare={stare.data} />
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
         <div className="mx-auto grid max-w-4xl grid-cols-5">

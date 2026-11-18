@@ -105,7 +105,7 @@ export function RetetaPage({ c, id }: { c: Continut; id?: string }) {
         {r.pahar && (
           <Card tone="leaf" className="flex items-center gap-3">
             <CupSoda className="size-6 flex-none text-jungle" />
-            <span><b>Pahar:</b> {r.pahar}</span>
+            <span><b>Servire:</b> {r.pahar}</span>
           </Card>
         )}
         <Card tone={r.alergeni.length ? 'clay' : 'leaf'}>

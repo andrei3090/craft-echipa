@@ -10,6 +10,7 @@ const base = process.env.BASE ?? '/';
 
 export default defineConfig(({ command }) => ({
   base,
+  define: { __BUILD__: JSON.stringify(new Date().toISOString().slice(0, 16).replace('T', ' ')) },
   plugins: [
     react(),
     tailwindcss(),

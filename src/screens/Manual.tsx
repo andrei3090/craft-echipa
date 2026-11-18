@@ -40,6 +40,7 @@ export default function Manual({ c }: { c: Continut }) {
         ))}
         {!hits.length && <p className="text-muted">Nimic găsit. Încearcă alt cuvânt.</p>}
       </div>
+      <p className="mt-8 text-center text-xs text-muted">Versiunea aplicației: {__BUILD__} · conținut {c.versiune}</p>
     </div>
   );
 }

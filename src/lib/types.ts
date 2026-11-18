@@ -41,6 +41,26 @@ export const Formular = z.object({
 });
 export type Formular = z.infer<typeof Formular>;
 
+export const Reteta = z.object({
+  id: z.string(), nume: z.string(), cat: z.string(), sub: z.string(),
+  ingrediente: z.array(z.object({ n: z.string(), q: z.string() })), pasi: z.array(z.string()),
+  pahar: z.string(), alergeni: z.array(z.string()), nota: z.string(),
+});
+export type Reteta = z.infer<typeof Reteta>;
+export const Categorie = z.object({ id: z.string(), nume: z.string(), emoji: z.string(), reguli: z.array(z.string()) });
+export type Categorie = z.infer<typeof Categorie>;
+export const Tinta = z.object({ id: z.string(), nume: z.string(), unit: z.string(), min: z.number(), max: z.number(), text: z.string() });
+export type Tinta = z.infer<typeof Tinta>;
+export const Espressor = z.object({
+  tinte: z.array(Tinta),
+  aparat: z.array(z.tuple([z.string(), z.string()])),
+  reguli_aparat: z.array(z.string()),
+  reglaj: z.array(z.string()),
+  curatare: z.array(z.object({ cand: z.string(), pasi: z.array(z.string()) })),
+  probleme: z.array(z.tuple([z.string(), z.string()])),
+});
+export type Espressor = z.infer<typeof Espressor>;
+
 export const Continut = z.object({
   versiune: z.string(),
   zilnic: z.array(Sectiune),
@@ -50,6 +70,9 @@ export const Continut = z.object({
   raport: Raport,
   formulare: z.record(Formular),
   manual: z.array(z.object({ id: z.string(), capitol: z.string(), titlu: z.string(), html: z.string() })),
+  categorii: z.array(Categorie),
+  retete: z.array(Reteta),
+  espressor: Espressor,
 });
 export type Continut = z.infer<typeof Continut>;
 
@@ -63,7 +86,7 @@ export const Stare = z.object({
 });
 export type Stare = z.infer<typeof Stare>;
 
-export type TipInregistrare = 'zilnic' | 'runde' | 'temperaturi' | 'saptamanal' | 'lunar' | 'raport' | 'incident' | 'receptie';
+export type TipInregistrare = 'zilnic' | 'runde' | 'temperaturi' | 'saptamanal' | 'lunar' | 'raport' | 'incident' | 'receptie' | 'reglaj';
 export type Inregistrare = {
   id: string;
   tip: TipInregistrare;

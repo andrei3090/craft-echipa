@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { clsx } from 'clsx';
-import { BookOpen, CalendarCheck, ClipboardList, CloudOff, Home as HomeIcon, LogOut, RefreshCw } from 'lucide-react';
+import { BookOpen, CalendarCheck, ClipboardList, CloudOff, Coffee, Home as HomeIcon, LogOut, RefreshCw } from 'lucide-react';
 import { useEffect } from 'react';
 import { getContinut, getStare, SessionExpired } from './lib/api';
 import { useOutbox } from './lib/outbox';
@@ -16,6 +16,8 @@ import Raport from './screens/Raport';
 import Periodic from './screens/Periodic';
 import Formulare, { FormularScreen } from './screens/Formulare';
 import Manual, { ManualPage } from './screens/Manual';
+import Retete, { RetetaPage } from './screens/Retete';
+import Espressor from './screens/Espressor';
 
 const base = import.meta.env.BASE_URL;
 
@@ -55,10 +57,13 @@ function Shell() {
   else if (r0 === 'sapt') page = <Periodic c={c} stare={stare.data} />;
   else if (r0 === 'formulare') page = <Formulare c={c} />;
   else if (r0 === 'form') page = <FormularScreen c={c} id={r1} />;
+  else if (r0 === 'retete') page = <Retete c={c} />;
+  else if (r0 === 'reteta') page = <RetetaPage c={c} id={r1} />;
+  else if (r0 === 'espressor') page = <Espressor c={c} stare={stare.data} />;
   else if (r0 === 'manual') page = r1 ? <ManualPage c={c} id={r1} /> : <Manual c={c} />;
   else page = <Home c={c} stare={stare.data} loading={stare.isLoading} />;
 
-  const tab = r0 === 'sapt' ? 'sapt' : r0 === 'formulare' || r0 === 'form' ? 'formulare' : r0 === 'manual' ? 'manual' : 'azi';
+  const tab = r0 === 'sapt' ? 'sapt' : r0 === 'formulare' || r0 === 'form' ? 'formulare' : r0 === 'manual' ? 'manual' : ['retete', 'reteta', 'espressor'].includes(r0) ? 'retete' : 'azi';
 
   return (
     <div className="flex min-h-full flex-col">
@@ -81,15 +86,16 @@ function Shell() {
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 pt-5 pb-28 sm:px-6">{page}</main>
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-        <div className="mx-auto grid max-w-4xl grid-cols-4">
+        <div className="mx-auto grid max-w-4xl grid-cols-5">
           {([
             ['azi', 'Azi', HomeIcon],
+            ['retete', 'Rețete', Coffee],
             ['sapt', 'Săptămâna', CalendarCheck],
             ['formulare', 'Formulare', ClipboardList],
             ['manual', 'Manual', BookOpen],
           ] as const).map(([id, label, Icon]) => (
             <button key={id} onClick={() => go(id)}
-              className={clsx('flex h-[4.5rem] flex-col items-center justify-center gap-1 text-sm font-bold', tab === id ? 'text-jungle' : 'text-muted')}>
+              className={clsx('flex h-[4.5rem] flex-col items-center justify-center gap-1 text-xs font-bold sm:text-sm', tab === id ? 'text-jungle' : 'text-muted')}>
               <Icon className={clsx('size-6', tab === id && 'stroke-[2.5]')} />
               {label}
             </button>

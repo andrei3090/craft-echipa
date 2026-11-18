@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { AlertTriangle, ChevronRight, CloudUpload, Thermometer, Wallet } from 'lucide-react';
+import { AlertTriangle, ChevronRight, CloudUpload, Coffee, Thermometer, Wallet } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Card, Progress } from '../components/ui';
 import { go } from '../lib/route';
@@ -76,6 +76,8 @@ export default function Home({ c, stare, loading }: { c: Continut; stare?: Stare
       )}
 
       <section className="grid gap-3 sm:grid-cols-2">
+        <Tile onClick={() => go('espressor')} icon={<Coffee className="size-7 text-jungle" />} title="Reglaj espresso"
+          sub="Dimineața: 18 g → 36 g în 25–30 s" done={!!saved('reglaj')} right={who(saved('reglaj'))} />
         <Tile onClick={() => go('temp')} icon={<Thermometer className="size-7 text-jungle" />} title="Temperaturi"
           sub={`Dimineața ${saved('temperaturi', 'Temperaturi dimineața') ? '✔' : '—'} · Seara ${saved('temperaturi', 'Temperaturi seara') ? '✔' : '—'}`}
           done={!!saved('temperaturi', 'Temperaturi dimineața') && !!saved('temperaturi', 'Temperaturi seara')} />

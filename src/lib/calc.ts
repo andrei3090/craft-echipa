@@ -41,3 +41,10 @@ export function textLimita(min: number | null, max: number | null): string {
   if (min !== null) return `minim ${min} °C`;
   return '—';
 }
+
+/** Espresso dial-in: below, inside or above the target range. */
+export function verdict(t: { min: number; max: number }, v: string): 'ok' | 'jos' | 'sus' | null {
+  if (!v.trim()) return null;
+  const n = num(v);
+  return n < t.min ? 'jos' : n > t.max ? 'sus' : 'ok';
+}

@@ -66,7 +66,7 @@ export function mockApi(): Plugin {
           const d = JSON.parse(body || '{}');
           const send = (o: unknown) => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify(o)); };
           setTimeout(() => {
-            if (d.action === 'avatare') return send({ ok: true, avatare: AVATARE });
+            if (d.action === 'avatare') return send({ ok: true, avatare: AVATARE.filter(a => a.id === 'maimuta' || a.id === 'elefant') });
             if (d.action === 'program') return send(program('programPublic', d.saptamani));
             if (d.action === 'login') return d.pin === PIN ? send({ ok: true, token: `${d.avatar}.${today()}.x`, data: today() }) : send({ ok: false, error: 'PIN greșit' });
             const [avatar, day] = String(d.token || '').split('.');

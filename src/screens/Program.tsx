@@ -56,6 +56,7 @@ export default function ProgramScreen() {
 
   const onSlot = (s: Slot, data: string) => {
     const p = program.data!;
+    if (s.tura === 'T') return toast('Ziua deschiderii: suntem toți acolo, tura nu se schimbă.');
     if (s.avatar !== me.id) return toast(`Tura e a lui ${av(s.avatar).emoji} ${av(s.avatar).nume}. Dacă vrei s-o iei, ea îți trimite cererea.`);
     if (toAbs(data, s.start) - toAbs(p.azi, p.ora) < p.reguli.oreMinim * 60)
       return toast.error(`Tura începe în mai puțin de ${p.reguli.oreMinim} de ore. Pentru schimb îl suni pe Andrei.`);

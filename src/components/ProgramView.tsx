@@ -8,6 +8,7 @@ export const TURA_INFO: Record<string, { nume: string; emoji: string; bg: string
   D: { nume: 'Dimineață', emoji: '🌅', bg: 'bg-sun-soft border-[#f1dca8]' },
   S: { nume: 'Seară', emoji: '🌙', bg: 'bg-leaf border-[#cfe0d3]' },
   X: { nume: 'Extra', emoji: '➕', bg: 'bg-white border-dashed border-[#cbbfae]' },
+  T: { nume: 'Deschiderea', emoji: '🎉', bg: 'bg-sun-soft border-sun' },
 };
 
 export function useProgram() {
@@ -15,6 +16,11 @@ export function useProgram() {
 }
 
 const toMin = (hm: string) => { const [h, m] = hm.split(':').map(Number); return h * 60 + m; };
+const lunea = (d: string) => { const t = Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)); const wd = (new Date(t).getUTCDay() + 6) % 7; return new Date(t - wd * 864e5).toISOString().slice(0, 10); };
+const ZILE = ['luni', 'marți', 'miercuri', 'joi', 'vineri', 'sâmbătă', 'duminică'];
+const LUNI = ['ianuarie', 'februarie', 'martie', 'aprilie', 'mai', 'iunie', 'iulie', 'august', 'septembrie', 'octombrie', 'noiembrie', 'decembrie'];
+const ziDeschidere = (d: string) => `${ZILE[(new Date(d + 'T12:00:00Z').getUTCDay() + 6) % 7]}, ${+d.slice(8, 10)} ${LUNI[+d.slice(5, 7) - 1]}`;
+const zileIntre = (a: string, b: string) => Math.round((Date.parse(b) - Date.parse(a)) / (7 * 864e5));
 export const acumInTura = (p: Program, data: string, s: Slot) =>
   data === p.azi && toMin(p.ora) >= toMin(s.start) && toMin(p.ora) < toMin(s.sfarsit);
 
@@ -30,7 +36,7 @@ export function ProgramView({ program, avatare, me, onSlot, pending = [] }: {
         {program.saptamani.map((s, i) => (
           <button key={s.luni} onClick={() => setK(i)}
             className={clsx('flex-none rounded-full border px-4 py-2 text-sm font-bold', i === k ? 'border-jungle bg-jungle text-white' : 'border-line bg-card')}>
-            {i === 0 ? 'Săptămâna asta' : i === 1 ? 'Săptămâna viitoare' : s.eticheta.split(' – ')[0].replace(/^\S+ /, 'de la ')}
+            {(n => n === 0 ? 'Săptămâna asta' : n === 1 ? 'Săptămâna viitoare' : s.eticheta.split(' – ')[0].replace(/^\S+ /, 'de la '))(zileIntre(lunea(program.azi), s.luni))}
           </button>
         ))}
       </div>
@@ -55,7 +61,19 @@ function WeekGrid({ w, program, avatare, me, onSlot, pending }: {
               {z.eticheta.split(' ').slice(0, 2).join(' ')}{today && <span className="block text-xs">azi</span>}
             </div>
             <div className="grid flex-1 grid-cols-3 gap-1.5 sm:grid-cols-1">
+              {!z.sloturi.length && (
+                <div className="col-span-3 rounded-xl border border-dashed border-line px-1.5 py-2 text-center text-xs font-bold text-muted sm:col-span-1">
+                  {program.reguli.deschidere && z.data < program.reguli.deschidere ? 'Pregătiri' : 'Închis'}
+                </div>
+              )}
               {z.sloturi.map(s => {
+                if (s.tura === 'T') return (
+                  <div key={s.id} className={clsx('col-span-3 rounded-xl border px-1.5 py-2 text-center sm:col-span-1', TURA_INFO.T.bg)}>
+                    <div className="text-[11px] font-bold text-muted">🎉 {s.start}–{s.sfarsit}</div>
+                    <div className="text-xl leading-tight" aria-hidden>{avatare.map(a => a.emoji).join('')}</div>
+                    <div className="text-xs font-extrabold">Deschiderea · toată echipa</div>
+                  </div>
+                );
                 const a = av(s.avatar), mine = !!me && s.avatar === me, acum = acumInTura(program, z.data, s);
                 const Tag = onSlot ? 'button' : 'div';
                 return (
@@ -105,6 +123,7 @@ export function ProgramLogin({ avatare }: { avatare: Avatar[] }) {
   if (!q.data) return null;
   const p = q.data, z = p.saptamani[0]?.zile.find(x => x.data === p.azi);
   const acum = z?.sloturi.filter(s => acumInTura(p, z.data, s) && s.avatar) ?? [];
+  const inainte = !!p.reguli.deschidere && p.azi < p.reguli.deschidere;
   return (
     <section className="w-full rounded-3xl border border-line bg-card/80 p-4 text-left shadow-sm sm:p-5">
       <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
@@ -115,6 +134,9 @@ export function ProgramLogin({ avatare }: { avatare: Avatar[] }) {
           </span>
         )}
       </div>
+      {inainte && (
+        <p className="mb-3 rounded-2xl bg-sun-soft px-4 py-2 text-sm font-bold">🎉 Deschidem {ziDeschidere(p.reguli.deschidere!)}: suntem toți acolo. Programul pe ture începe a doua zi.</p>
+      )}
       <ProgramView program={p} avatare={avatare} />
       <p className="mt-3 text-sm text-muted">Vrei să schimbi o tură? Intră cu PIN-ul, apoi <b>Program</b>.</p>
     </section>

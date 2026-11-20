@@ -27,7 +27,7 @@ export default function Home({ c, stare, loading }: { c: Continut; stare?: Stare
   const saptDone = c.saptamanal.filter(i => stare?.saptamanal[i.id]).length;
   const prog = useProgram().data;
   const ziProg = prog?.saptamani[0]?.zile.find(z => z.data === prog.azi);
-  const tureMele = ziProg?.sloturi.filter(s => s.avatar === me.id) ?? [];
+  const tureMele = ziProg?.sloturi.filter(s => s.avatar === me.id || s.tura === 'T') ?? [];
 
   const who = (s: Saved | null) => s && (
     <span className="flex items-center gap-1.5 text-sm font-bold text-jungle">

@@ -108,3 +108,26 @@ export const Scor = z.object({
   ultimele: z.array(z.object({ data: z.string(), tura: z.string(), procent: z.number() })),
 });
 export type Scor = z.infer<typeof Scor>;
+
+// ------------------------------------------------------------------ shift schedule
+export const Slot = z.object({
+  id: z.string(), tura: z.enum(['D', 'S', 'X']), start: z.string(), sfarsit: z.string(), avatar: z.string(),
+  schimbat: z.boolean(), extra: z.boolean().optional().default(false),
+});
+export type Slot = z.infer<typeof Slot>;
+export const Saptamana = z.object({
+  luni: z.string(), eticheta: z.string(), rotatie: z.number(),
+  zile: z.array(z.object({ data: z.string(), eticheta: z.string(), sloturi: z.array(Slot) })),
+  ore: z.record(z.number()), oreExtra: z.record(z.number()).optional().default({}),
+});
+export type Saptamana = z.infer<typeof Saptamana>;
+export const Program = z.object({
+  azi: z.string(), ora: z.string(), saptamani: z.array(Saptamana),
+  reguli: z.object({ oreMinim: z.number(), maxOre: z.number(), admin: z.string().optional() }),
+});
+export type Program = z.infer<typeof Program>;
+export const Cerere = z.object({
+  id: z.string(), creat_la: z.string(), de: z.string(), catre: z.string(), slot: z.string(), slot2: z.string(),
+  stare: z.string(), raspuns_la: z.string(), nota: z.string(), text1: z.string(), text2: z.string(),
+});
+export type Cerere = z.infer<typeof Cerere>;

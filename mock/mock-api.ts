@@ -25,6 +25,30 @@ function scorFromBackend(rows: Row[], avatar: string, today: string, now: string
   return fn(() => rows, () => today, () => now, AVATARE, U, 'Europe/Bucharest', (x: string) => x, () => ({}), false, avatar);
 }
 
+// Runs the real backend/Program.gs (schedule + swaps) against an in-memory store.
+type ProgRow = { data: string; tura: string; avatar: string; nota: string };
+type Cerere = { id: string; [k: string]: string };
+const progMem = { ture: [] as ProgRow[], cereri: [] as Cerere[] };
+const progStore = {
+  ture: () => progMem.ture.map(r => ({ ...r })),
+  cereri: () => progMem.cereri.map(r => ({ ...r })),
+  salveazaTure: (list: ProgRow[]) => list.forEach(r => {
+    const i = progMem.ture.findIndex(x => x.data === r.data && x.tura === r.tura);
+    if (i >= 0) progMem.ture[i] = { ...r }; else progMem.ture.push({ ...r });
+  }),
+  salveazaCerere: (c: Cerere) => { const i = progMem.cereri.findIndex(x => x.id === c.id); if (i >= 0) progMem.cereri[i] = { ...c }; else progMem.cereri.push({ ...c }); },
+  dupaSchimbare: () => {},
+  anunta: (subiect: string) => console.log('[mock e-mail]', subiect),
+};
+function program(fn: string, ...args: unknown[]) {
+  const p = resolve(__dirname, '../../backend/Program.gs');
+  const t = new Date(), today = new Date(t.getTime() - t.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const now = `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`;
+  const f = new Function('azi', 'ora', 'AVATARE', 'Utilities', 'esc', 'STORE', 'ARGS',
+    readFileSync(p, 'utf8') + `\nPROG_STORE = STORE; return ${fn}(...ARGS);`);
+  return f(() => today, () => now, AVATARE, { getUuid: () => crypto.randomUUID() }, (x: string) => x, progStore, args);
+}
+
 export function mockApi(): Plugin {
   const rows: Row[] = [];
   const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
@@ -43,9 +67,16 @@ export function mockApi(): Plugin {
           const send = (o: unknown) => { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify(o)); };
           setTimeout(() => {
             if (d.action === 'avatare') return send({ ok: true, avatare: AVATARE });
+            if (d.action === 'program') return send(program('programPublic', d.saptamani));
             if (d.action === 'login') return d.pin === PIN ? send({ ok: true, token: `${d.avatar}.${today()}.x`, data: today() }) : send({ ok: false, error: 'PIN greșit' });
             const [avatar, day] = String(d.token || '').split('.');
             if (day !== today()) return send({ ok: false, error: 'sesiune expirată' });
+            try {
+              if (d.action === 'cereri') return send(program('cereriPentru', avatar));
+              if (d.action === 'cere_schimb') return send(program('cereSchimb', avatar, d));
+              if (d.action === 'raspunde') return send(program('raspundeCerere', avatar, d));
+              if (d.action === 'anuleaza') return send(program('anuleazaCerere', avatar, d));
+            } catch (e) { return send({ ok: false, error: String(e) }); }
             if (d.action === 'continut') return send({ ok: true, continut: content() });
             if (d.action === 'scor') { const t = new Date(); return send(scorFromBackend(rows, avatar, today(), `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}`)); }
             if (d.action === 'azi') {

@@ -1,6 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { clsx } from 'clsx';
-import { BookOpen, CalendarCheck, ClipboardList, CloudOff, Coffee, Home as HomeIcon, LogOut, RefreshCw } from 'lucide-react';
+import { BookOpen, CalendarDays, ClipboardList, CloudOff, Coffee, Home as HomeIcon, LogOut, RefreshCw, Sparkles } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { getContinut, getStare, SessionExpired } from './lib/api';
 import { useOutbox } from './lib/outbox';
@@ -19,6 +19,7 @@ import Manual, { ManualPage } from './screens/Manual';
 import Retete, { RetetaPage } from './screens/Retete';
 import Espressor from './screens/Espressor';
 import ScorScreen, { TuraPicker } from './screens/Scor';
+import ProgramScreen from './screens/Program';
 
 const base = import.meta.env.BASE_URL;
 
@@ -71,10 +72,11 @@ function Shell() {
   else if (r0 === 'reteta') page = <RetetaPage c={c} id={r1} />;
   else if (r0 === 'espressor') page = <Espressor c={c} stare={stare.data} />;
   else if (r0 === 'scor') page = <ScorScreen />;
+  else if (r0 === 'program') page = <ProgramScreen />;
   else if (r0 === 'manual') page = r1 ? <ManualPage c={c} id={r1} /> : <Manual c={c} />;
   else page = <Home c={c} stare={stare.data} loading={stare.isLoading} />;
 
-  const tab = r0 === 'sapt' ? 'sapt' : r0 === 'formulare' || r0 === 'form' ? 'formulare' : r0 === 'manual' ? 'manual' : ['retete', 'reteta', 'espressor'].includes(r0) ? 'retete' : 'azi';
+  const tab = r0 === 'program' ? 'program' : r0 === 'sapt' ? 'sapt' : r0 === 'formulare' || r0 === 'form' ? 'formulare' : r0 === 'manual' ? 'manual' : ['retete', 'reteta', 'espressor'].includes(r0) ? 'retete' : 'azi';
 
   return (
     <div className="flex min-h-full flex-col">
@@ -98,11 +100,12 @@ function Shell() {
       <TuraPicker stare={stare.data} />
 
       <nav className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-        <div className="mx-auto grid max-w-4xl grid-cols-5">
+        <div className="mx-auto grid max-w-4xl grid-cols-6">
           {([
             ['azi', 'Azi', HomeIcon],
             ['retete', 'Rețete', Coffee],
-            ['sapt', 'Săptămâna', CalendarCheck],
+            ['program', 'Program', CalendarDays],
+            ['sapt', 'Curățenie', Sparkles],
             ['formulare', 'Formulare', ClipboardList],
             ['manual', 'Manual', BookOpen],
           ] as const).map(([id, label, Icon]) => (

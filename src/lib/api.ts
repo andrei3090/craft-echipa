@@ -1,5 +1,5 @@
 import { get, set } from 'idb-keyval';
-import { Avatar, Continut, Scor, Stare, type Inregistrare } from './types';
+import { Avatar, Cerere, Continut, Program, Scor, Stare, type Inregistrare } from './types';
 import { z } from 'zod';
 
 let apiUrl: string | null = null;
@@ -76,3 +76,24 @@ export async function getScor(token: string): Promise<Scor> {
   const r = await call<unknown>('scor', { token });
   return Scor.parse(r);
 }
+
+// ------------------------------------------------------------------ shift schedule (public) and swaps
+export async function getProgram(): Promise<Program> {
+  try {
+    const p = Program.parse(await call<unknown>('program', { saptamani: 3 }));
+    await set('program', p);
+    return p;
+  } catch (e) {
+    const cached = (await get('program')) as Program | undefined;
+    if (cached) return cached;
+    throw e;
+  }
+}
+export async function getCereri(token: string): Promise<Cerere[]> {
+  const r = await call<{ cereri: unknown }>('cereri', { token });
+  return z.array(Cerere).parse(r.cereri);
+}
+export const cereSchimb = (token: string, slot: string, catre: string, slot2: string, nota: string) =>
+  call<{ cerere: unknown }>('cere_schimb', { token, slot, catre, slot2, nota });
+export const raspunde = (token: string, id: string, accept: boolean) => call<{ stare: string }>('raspunde', { token, id, accept });
+export const anuleaza = (token: string, id: string) => call<{ stare: string }>('anuleaza', { token, id });

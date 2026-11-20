@@ -3,6 +3,8 @@ import { AlertTriangle, ChevronRight, CloudUpload, Coffee, Thermometer, Wallet }
 import type { ReactNode } from 'react';
 import { Card, Progress } from '../components/ui';
 import { ScorCard } from './Scor';
+import { CereriBanner } from './Program';
+import { TURA_INFO, useProgram } from '../components/ProgramView';
 import { go } from '../lib/route';
 import { useSession } from '../lib/session';
 import { useAvatare, useSaved, type Saved } from '../lib/status';
@@ -23,6 +25,9 @@ export default function Home({ c, stare, loading }: { c: Continut; stare?: Stare
   const liste = c.zilnic.filter(s => s.tip === 'lista');
   const alerte = (stare?.zi ?? []).filter(x => x.alerta);
   const saptDone = c.saptamanal.filter(i => stare?.saptamanal[i.id]).length;
+  const prog = useProgram().data;
+  const ziProg = prog?.saptamani[0]?.zile.find(z => z.data === prog.azi);
+  const tureMele = ziProg?.sloturi.filter(s => s.avatar === me.id) ?? [];
 
   const who = (s: Saved | null) => s && (
     <span className="flex items-center gap-1.5 text-sm font-bold text-jungle">
@@ -36,6 +41,18 @@ export default function Home({ c, stare, loading }: { c: Continut; stare?: Stare
         <h1 className="font-display text-3xl text-jungle">{salut}, {me.nume}!</h1>
         <p className="text-muted capitalize-first">{zile[d.getDay()]}, {d.getDate()} {luni[d.getMonth()]}{loading ? ' · se încarcă…' : ''}</p>
       </div>
+
+      {prog && (
+        <button onClick={() => go('program')} className="flex w-full items-center gap-3 rounded-3xl border border-line bg-card p-4 text-left shadow-sm">
+          <span className="text-3xl">📅</span>
+          <span className="flex-1">
+            <span className="block font-extrabold">{tureMele.length ? 'Azi lucrezi: ' + tureMele.map(s => `${TURA_INFO[s.tura].nume.toLowerCase()} ${s.start}–${s.sfarsit}`).join(' + ') : 'Azi nu ești în program'}</span>
+            <span className="block text-sm text-muted">Vezi programul săptămânii și schimbă o tură</span>
+          </span>
+          <ChevronRight className="size-5 text-muted" />
+        </button>
+      )}
+      <CereriBanner onOpen={() => go('program')} />
 
       <ScorCard />
 

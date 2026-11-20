@@ -7,6 +7,7 @@ import { useSession } from '../lib/session';
 import type { Avatar } from '../lib/types';
 import { retry } from '../lib/useSave';
 import { Button } from '../components/ui';
+import { ProgramLogin } from '../components/ProgramView';
 
 const base = import.meta.env.BASE_URL;
 
@@ -15,10 +16,10 @@ export default function Login() {
   const [who, setWho] = useState<Avatar | null>(null);
 
   return (
-    <div className="mx-auto flex min-h-full max-w-xl flex-col items-center justify-center px-6 py-10 text-center">
+    <div className="mx-auto flex min-h-full max-w-5xl flex-col items-center justify-center px-4 py-10 text-center sm:px-6">
       <img src={`${base}logo.png`} alt="Craft Cafe · Play & Study" className="mb-6 h-28 w-auto" />
       {!who ? (
-        <>
+        <div className="w-full max-w-xl">
           <h1 className="font-display text-3xl text-jungle">Cine e în tură?</h1>
           <p className="mt-2 text-muted">Atinge-ți animalul, apoi scrie PIN-ul.</p>
           {avatare.isError && (
@@ -34,10 +35,11 @@ export default function Login() {
             ))}
             {avatare.isLoading && Array.from({ length: 4 }, (_, i) => <div key={i} className="h-40 animate-pulse rounded-3xl bg-line/60" />)}
           </div>
-        </>
+        </div>
       ) : (
-        <PinPad avatar={who} onBack={() => setWho(null)} />
+        <div className="w-full max-w-xl"><PinPad avatar={who} onBack={() => setWho(null)} /></div>
       )}
+      {!who && avatare.data && <div className="mt-10 w-full"><ProgramLogin avatare={avatare.data} /></div>}
     </div>
   );
 }

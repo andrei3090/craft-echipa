@@ -89,7 +89,7 @@ function Ore({ w, avatare }: { w: Saptamana; avatare: Avatar[] }) {
   return (
     <div className="mt-3 flex flex-wrap gap-2 text-sm">
       {list.map(([id, h]) => (
-        <span key={id} className="rounded-full border border-line bg-card px-3 py-1 font-bold">{av(id)?.emoji} {av(id)?.nume ?? id}: {h} h</span>
+        <span key={id} className="rounded-full border border-line bg-card px-3 py-1 font-bold">{av(id)?.emoji} {av(id)?.nume ?? id}: {h} h lucrate</span>
       ))}
       {Object.entries(w.oreExtra).map(([id, h]) => (
         <span key={id + 'x'} className="rounded-full border border-dashed border-[#cbbfae] bg-card px-3 py-1 font-bold">➕ extra weekend: {h} h</span>
